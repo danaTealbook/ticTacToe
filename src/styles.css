@@ -1,0 +1,80 @@
+* {
+  box-sizing: border-box;
+  background-color: #e8ebed;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 20px;
+  padding: 0;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-family: "Chalkduster";
+  font-size: min(8vw, 8vh);
+  height: min(10vw, 10vh);
+  width: min(10vw, 10vh);
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  border-radius: 1vw;
+}
+
+.board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-size: 4vw;
+  font-family: "Marker Felt";
+  text-align: center;
+}
+
+.results {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 3vw;
+  font-family: "Marker Felt";
+}
+
+.restart {
+  border: none;
+  border-radius: 8px;
+  background-color: #4caf50;
+  color: white;
+  padding: 6px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  font-size: 3vw;
+  font-family: "Marker Felt";
+  cursor: pointer;
+  margin: auto;
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.restart:hover {
+  color: #333333;
+  box-shadow: 0 10px 10px 0 rgba(0, 0, 0, 0.24),
+    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+button:active {
+  /* background-color: red; */
+  opacity: 0.5;
+}
