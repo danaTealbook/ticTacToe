@@ -24,6 +24,10 @@ body {
   border-radius: 1vw;
 }
 
+.winningSquare {
+  background: #a9ebac;
+}
+
 .board {
   display: flex;
   align-items: center;
@@ -75,6 +79,5 @@ body {
 }
 
 button:active {
-  /* background-color: red; */
   opacity: 0.5;
 }
