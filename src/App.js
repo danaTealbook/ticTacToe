@@ -2,10 +2,6 @@ import { useState } from "react";
 import { BoardContext } from "./BoardContext";
 import Board from "./Board";
 
-export const playerXColor = "red";
-export const playerOColor = "#3376f2";
-export const drawColor = "grey";
-
 const lines = [
   [0, 1, 2],
   [3, 4, 5],
@@ -88,17 +84,16 @@ export default function Game() {
   return (
     <BoardContext.Provider value={{ squares, winningSquares, handleClick }}>
       <div
-        className="status"
-        style={{
-          color:
-            winner === "X"
-              ? playerXColor
-              : winner === "O"
-              ? playerOColor
-              : moveCount === 9
-              ? drawColor
-              : "black"
-        }}
+        className={
+          "status " +
+          (winner === "X"
+            ? "playerXColor"
+            : winner === "O"
+            ? "playerOColor"
+            : moveCount === 9
+            ? "drawColor"
+            : "")
+        }
       >
         {status}
       </div>
@@ -106,9 +101,9 @@ export default function Game() {
         <div>
           <Board />
           <div className="results ">
-            <div style={{ color: playerXColor }}>Player X: {results[0]}</div>
-            <div style={{ color: playerOColor }}>Player O: {results[1]}</div>
-            <div style={{ color: drawColor }}>Draw: {results[2]}</div>
+            <div className="playerXColor">Player X: {results[0]}</div>
+            <div className="playerOColor">Player O: {results[1]}</div>
+            <div className="drawColor">Draw: {results[2]}</div>
           </div>
           <button onClick={handleRestart} className="restart">
             Play again

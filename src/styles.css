@@ -81,3 +81,14 @@ body {
 button:active {
   opacity: 0.5;
 }
+
+.playerXColor {
+  color: red;
+}
+
+.playerOColor {
+  color: #3376f2;
+}
+.drawColor {
+  color: grey;
+}
