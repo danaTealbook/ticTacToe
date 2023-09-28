@@ -1,49 +1,47 @@
 import { useState } from "react";
+import { BoardContext } from "./BoardContext";
+import Board from "./Board";
 
-const playerXColor = "red";
-const playerOColor = "#3376f2";
-const drawColor = "grey";
+export const playerXColor = "red";
+export const playerOColor = "#3376f2";
+export const drawColor = "grey";
 
-function Square({ value, onSquareClick, winningSquares, index }) {
-  //Todo: use useContext for winningSquares
-  let squareStyle = "square";
-  if (winningSquares.length === 3 && winningSquares.includes(index)) {
-    squareStyle += " winningSquare";
+const lines = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+function findWinningSquares(squares) {
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return lines[i];
+    }
   }
-  return (
-    <button
-      className={squareStyle}
-      style={{ color: value === "X" ? playerXColor : playerOColor }}
-      onClick={onSquareClick}
-    >
-      {value}
-    </button>
-  );
+  return [];
 }
 
-function BoardRow({ squares, onSquareClick, indexes, winningSquares }) {
-  return (
-    <div className="board-row">
-      {indexes.map((i) => (
-        <Square
-          key={i}
-          value={squares[i]}
-          onSquareClick={() => onSquareClick(i)}
-          winningSquares={winningSquares}
-          index={i}
-        />
-      ))}
-    </div>
-  );
+function findWinner(squares) {
+  const winnersFound = findWinningSquares(squares);
+  if (winnersFound.length > 0) {
+    return squares[winnersFound[0]];
+  }
+  return null;
 }
 
-export default function Board() {
+export default function Game() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [moveCount, setMoveCount] = useState(0);
-  const [winners, setWinners] = useState(Array(3).fill(0));
+  const [results, setResults] = useState(Array(3).fill(0));
   const xIsNext = moveCount % 2 === 0;
 
-  const winner = calculateWinner(squares);
+  const winner = findWinner(squares);
   let status = winner
     ? "Winner: " + winner
     : moveCount === 9
@@ -51,19 +49,19 @@ export default function Board() {
     : "Next player: " + (xIsNext ? "X" : "O");
   const winningSquares = findWinningSquares(squares);
 
-  function handleWinners(newSquares, newMoveCount) {
-    const newWinner = calculateWinner(newSquares);
+  function handleResults(newSquares, newMoveCount) {
+    const newWinner = findWinner(newSquares);
     if (newWinner) {
       if (newWinner === "X") {
-        const newCount = winners[0] + 1;
-        setWinners([newCount, ...winners.slice(1)]);
+        const newCount = results[0] + 1;
+        setResults([newCount, ...results.slice(1)]);
       } else {
-        const newCount = winners[1] + 1;
-        setWinners([winners[0], newCount, winners[2]]);
+        const newCount = results[1] + 1;
+        setResults([results[0], newCount, results[2]]);
       }
     } else if (newMoveCount === 9) {
-      const newCount = winners[2] + 1;
-      setWinners([winners[0], winners[1], newCount]);
+      const newCount = results[2] + 1;
+      setResults([results[0], results[1], newCount]);
     }
   }
 
@@ -79,7 +77,7 @@ export default function Board() {
     }
     setSquares(nextSquares);
     setMoveCount(moveCount + 1);
-    handleWinners(nextSquares, moveCount + 1);
+    handleResults(nextSquares, moveCount + 1);
   }
 
   function handleRestart() {
@@ -88,7 +86,7 @@ export default function Board() {
   }
 
   return (
-    <>
+    <BoardContext.Provider value={{ squares, winningSquares, handleClick }}>
       <div
         className="status"
         style={{
@@ -106,68 +104,17 @@ export default function Board() {
       </div>
       <div className="board">
         <div>
-          <div>
-            <BoardRow
-              squares={squares}
-              onSquareClick={handleClick}
-              indexes={[0, 1, 2]}
-              winningSquares={winningSquares}
-            />
-            <BoardRow
-              squares={squares}
-              onSquareClick={handleClick}
-              indexes={[3, 4, 5]}
-              winningSquares={winningSquares}
-            />
-            <BoardRow
-              squares={squares}
-              onSquareClick={handleClick}
-              indexes={[6, 7, 8]}
-              winningSquares={winningSquares}
-            />
-          </div>
+          <Board />
           <div className="results ">
-            <div style={{ color: playerXColor }}>Player X: {winners[0]}</div>
-            <div style={{ color: playerOColor }}>Player O: {winners[1]}</div>
-            <div style={{ color: drawColor }}>Draw: {winners[2]}</div>
+            <div style={{ color: playerXColor }}>Player X: {results[0]}</div>
+            <div style={{ color: playerOColor }}>Player O: {results[1]}</div>
+            <div style={{ color: drawColor }}>Draw: {results[2]}</div>
           </div>
           <button onClick={handleRestart} className="restart">
             Play again
           </button>
         </div>
       </div>
-    </>
+    </BoardContext.Provider>
   );
-}
-
-const lines = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
-
-function calculateWinner(squares) {
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
-
-function findWinningSquares(squares) {
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return lines[i];
-    }
-  }
-
-  return [];
 }
